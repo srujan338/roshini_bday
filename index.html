@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Baby Yoda's Birthday Mission 💌</title>
+<style>
+/* ===== 2. CSS VARIABLES & THEME ===== */
+:root{--bg:#fff1f2;--rose:#f43f5e;--dark:#9f1239;--soft:#ffe4e6;--white:#fff;--text:#4c1d2d;--text2:#881337;
+--hand:"Segoe Print","Bradley Hand","Comic Sans MS","Chalkboard SE",cursive;--sys:ui-rounded,"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--sys);font-size:17px}
+body{background:radial-gradient(circle at 20% 10%,#ffd9de 0,transparent 40%),radial-gradient(circle at 90% 90%,#ffd0d8 0,transparent 40%),var(--bg);overflow-x:hidden}
+#top{position:fixed;top:0;left:0;right:0;z-index:20;padding:8px 14px;background:rgba(255,241,242,.92);backdrop-filter:blur(4px);text-align:center;font-family:var(--hand);font-size:14px;color:var(--dark)}
+#bar{height:10px;background:var(--soft);border-radius:9px;margin-top:5px;overflow:hidden;border:1px solid #fbb6c0}
+#fill{height:100%;width:0;background:linear-gradient(90deg,var(--rose),#fb7185);transition:width .6s}
+#stage{max-width:760px;margin:0 auto;padding:78px 16px 90px}
+.s{display:none;animation:in .5s ease}
+.s.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(18px) rotate(-1deg)}to{opacity:1;transform:none}}
+h1,h2{font-family:var(--hand);color:var(--dark);line-height:1.25;margin:.3em 0}
+h1{font-size:clamp(26px,6vw,40px)}h2{font-size:clamp(22px,5vw,30px)}
+.card{background:var(--white);border-radius:18px;padding:22px;box-shadow:0 8px 24px rgba(159,18,57,.13);border:2px dashed #fda4af;margin:14px 0;position:relative}
+.card.tilt{transform:rotate(-1deg)}
+.sticker{display:inline-block;background:var(--rose);color:#fff;font-family:var(--hand);padding:4px 12px;border-radius:8px;transform:rotate(-4deg);font-size:14px;letter-spacing:1px}
+.note{font-family:var(--hand);color:var(--text2);font-size:15px}
+.btn{font-family:var(--hand);font-size:17px;background:var(--rose);color:#fff;border:0;border-radius:14px;padding:12px 20px;margin:6px 6px 6px 0;cursor:pointer;box-shadow:0 4px 0 var(--dark);transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translateY(-2px) rotate(-1deg)}.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--dark)}
+.btn.alt{background:var(--soft);color:var(--dark);box-shadow:0 4px 0 #fda4af}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,.opt:focus-visible,.pcard:focus-visible{outline:3px solid var(--dark);outline-offset:2px}
+.opt{display:block;width:100%;text-align:left;font:inherit;background:var(--white);color:var(--text);border:2px solid #fda4af;border-radius:12px;padding:12px 14px;margin:8px 0;cursor:pointer;transition:.15s}
+.opt:hover{background:var(--soft);transform:translateX(4px)}.opt.sel{background:var(--rose);color:#fff;border-color:var(--dark)}
+.opt.good{background:#dcfce7;border-color:#16a34a}.opt.bad{background:#fee2e2;border-color:#ef4444}
+.react{font-family:var(--hand);color:var(--dark);min-height:1.5em;margin-top:8px;font-size:18px}
+.center{text-align:center}
+.doodle{font-family:var(--hand);color:var(--rose);font-size:26px;display:inline-block;transform:rotate(-8deg)}
+/* nav */
+#nav{position:fixed;bottom:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;padding:10px 16px;background:rgba(255,241,242,.92);backdrop-filter:blur(4px)}
+/* ===== 3. REUSABLE VISUAL COMPONENTS ===== */
+#hearts{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.fh{position:absolute;bottom:-30px;animation:fl linear forwards;opacity:.7}
+@keyframes fl{to{transform:translateY(-110vh) rotate(40deg);opacity:0}}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:50;width:100%;height:100%}
+.env{position:relative;width:250px;height:165px;margin:26px auto;background:#fb7185;border-radius:6px 6px 12px 12px;box-shadow:0 10px 25px rgba(159,18,57,.3);cursor:pointer}
+.env:before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,transparent 50%,#e11d48 50%) left/50% 100% no-repeat,linear-gradient(225deg,transparent 50%,#e11d48 50%) right/50% 100% no-repeat;z-index:3}
+.env .flap{position:absolute;top:0;left:0;width:100%;height:90px;background:#f43f5e;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .7s;z-index:4}
+.env .paper{position:absolute;left:12px;right:12px;top:8px;height:140px;background:#fff;border-radius:6px;transition:transform .7s .4s;z-index:2;font-family:var(--hand);font-size:12px;padding:10px;color:var(--dark)}
+.env .seal{position:absolute;left:50%;top:70px;transform:translateX(-50%);z-index:5;font-size:30px;transition:opacity .3s}
+.env.open .flap{transform:rotateX(180deg);z-index:1}.env.open .paper{transform:translateY(-60px)}.env.open .seal{opacity:0}
+.stamp{display:inline-block;border:5px solid var(--rose);color:var(--rose);font-family:var(--hand);font-size:28px;padding:4px 16px;transform:rotate(-12deg);animation:st .4s cubic-bezier(.2,2,.4,1)}
+@keyframes st{from{transform:scale(3) rotate(-30deg);opacity:0}}
+input[type=range]{width:100%;accent-color:var(--rose);height:30px}
+.big{font-family:var(--hand);font-size:48px;color:var(--rose);text-align:center}
+.teams{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.team{font-family:var(--hand);font-size:19px;padding:20px 8px;border-radius:16px;border:3px solid var(--dark);background:var(--soft);color:var(--dark);cursor:pointer;transition:.2s}
+.team:hover{transform:scale(1.04) rotate(-2deg);background:#fecdd3}
+.win{animation:pop .8s cubic-bezier(.2,2,.4,1)}@keyframes pop{from{transform:scale(.3);opacity:0}}
+#certPrev{width:100%;border-radius:8px;border:2px solid #fda4af;margin-top:10px;background:#fffdf5}
+/* gallery */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:20px;padding:10px}
+.pcard{background:#fff;padding:8px 8px 10px;box-shadow:0 6px 16px rgba(0,0,0,.18);cursor:pointer;border:0;font:inherit;text-align:center;transition:.2s}
+.pcard:nth-child(odd){transform:rotate(-3deg)}.pcard:nth-child(even){transform:rotate(2.5deg)}
+.pcard:hover{transform:scale(1.06) rotate(0)}
+.pcard .m{width:100%;aspect-ratio:1;object-fit:cover;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:34px;color:var(--rose)}
+.pcard p{margin:8px 0 0;font-family:var(--hand);font-size:13px;color:var(--text2)}
+#lb{position:fixed;inset:0;background:rgba(76,29,45,.9);z-index:60;display:none;align-items:center;justify-content:center;flex-direction:column;padding:16px}
+#lb.on{display:flex}#lb img,#lb video{max-width:94vw;max-height:78vh;border:8px solid #fff;border-radius:4px}
+#lb p{color:#fff;font-family:var(--hand)}
+textarea,input[type=date]{width:100%;font:inherit;font-family:var(--hand);padding:12px;border:2px solid #fda4af;border-radius:12px;background:#fffafa;color:var(--text)}
+textarea{min-height:130px}
+.cd{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.cd div{background:var(--soft);border-radius:12px;padding:10px 14px;text-align:center;font-family:var(--hand);color:var(--dark)}.cd b{display:block;font-size:26px}
+/* letter: calmer */
+body.calm{background:linear-gradient(#ffe4e6,#fff1f2)}
+.letter{background:#fffdf7;border-radius:6px;padding:26px 22px;box-shadow:0 10px 30px rgba(159,18,57,.2);font-family:var(--hand);line-height:1.8;color:var(--text);background-image:repeating-linear-gradient(transparent 0 30px,#fbd5db 30px 31px);animation:in 1.2s ease}
+.letter p{margin:0 0 14px}
+.final{text-align:center;padding-top:30px}
+@media(max-width:480px){.env{width:220px}.teams{gap:8px}.card{padding:16px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+<!-- ===== 1. HTML STRUCTURE ===== -->
+<div id="hearts"></div><canvas id="fx"></canvas>
+<div id="top"><span id="plabel">Baby Yoda's Birthday Mission: 0% completed</span><div id="bar"><div id="fill"></div></div></div>
+<main id="stage">
+
+<!-- S1 -->
+<section class="s" data-i="0"><div class="center">
+<span class="sticker">TOP SECRET</span>
+<div class="env" id="env1" role="button" tabindex="0" aria-label="Open envelope"><div class="paper">Agent Roshini 🕵️‍♀️ ...</div><div class="flap"></div><div class="seal">💌</div></div>
+<p>Oka extremely important mission ni oka very special Baby Yoda ki assign chesaru.</p>
+<h2>Agent Roshini, nee presence immediately kavali!</h2>
+<button class="btn" id="open1">Open your mission</button>
+<p class="note">Orey Baby Yoda, vachava finally? 😂</p></div></section>
+
+<!-- S2 -->
+<section class="s" data-i="1"><div class="card tilt">
+<h1>Welcome, Baby Yoda! 💚</h1>
+<p>Nee mission emante: konchem too serious investigations, questionable allegations, and anavasaramaina competitions ni survive cheyyadam.</p>
+<ol class="note" style="font-size:18px"><li>Nee reputation ni defend cheskovali.</li><li>Chala important disputes settle cheyyali.</li><li>Nuvvu ippudu inka older avuthunnav ani accept cheyyali 😭</li></ol>
+<button class="btn" data-next>Let's begin</button></div></section>
+
+<!-- S3 -->
+<section class="s" data-i="2"><div class="card">
+<span class="sticker">INVESTIGATION #1</span>
+<h2>First investigation: How tall is our Baby Yoda?</h2>
+<div class="big" id="hv">155 cm</div>
+<input type="range" id="hs" min="90" max="210" value="155" aria-label="Height">
+<div class="react" id="hr"></div>
+<button class="btn" data-next>Next investigation</button></div></section>
+
+<!-- S4 -->
+<section class="s" data-i="3"><div class="card center">
+<h1>🔥 THE GREAT WELDING WAR 🔥</h1>
+<p class="note">Two welders. One welding machine. Unlimited ego.</p>
+<p>Evaru weld strong ga chesaro, ikkada thelchali. Nee team select chesuko:</p>
+<div class="teams"><button class="team" id="tS">🧑‍🔧 Team Srujan</button><button class="team" id="tR">👩‍🔧 Team Roshini</button></div>
+<div class="react" id="wr"></div>
+<div id="wwin" style="display:none">
+<div class="win"><h1>AND THE WINNER IS... ROSHINI! 🏆</h1></div>
+<p>After extensive research, questionable testing, and absolutely no independent verification, we hereby declare that Roshini's weld is superior.</p>
+<canvas id="cert" width="1200" height="850" style="display:none"></canvas>
+<img id="certPrev" alt="Welding certificate preview">
+<button class="btn" id="dlCert">Download my certificate</button>
+<p class="note">Next screen ki velladaniki Next button nokku 👇</p></div></div></section>
+
+<!-- S5 -->
+<section class="s" data-i="4"><div class="card">
+<span class="sticker">⚖️ COURT IN SESSION</span>
+<h1>THE FRIENDSHIP COURT</h1>
+<p class="note">Case No. 143: The State vs. Srujan and Vinay</p>
+<p>Your Honour, Roshini, mimmalni oka chala controversial case judge cheyyadaniki summon chesaru ee friend group history lo.</p>
+<h2>Are Srujan and Vinay actually in a relationship?</h2>
+<button class="opt" data-c="0">1. Guilty.</button><button class="opt" data-c="1">2. Innocent.</button><button class="opt" data-c="2">3. Case pending. Need more evidence.</button>
+<div class="center" id="stampbox" style="min-height:70px;margin-top:10px"></div><div class="react" id="cr"></div>
+<button class="btn" data-next>Continue</button></div></section>
+
+<!-- S6 -->
+<section class="s" data-i="5"><div class="card">
+<span class="sticker">QUICK QUIZ</span>
+<div id="qbox"></div></div></section>
+
+<!-- S7 -->
+<section class="s" data-i="6"><div class="card">
+<span class="sticker">🛸 SCANNER</span>
+<h2>Baby Yoda Personality Scanner</h2>
+<div id="pbox"></div></div></section>
+
+<!-- S8 -->
+<section class="s" data-i="7"><div class="card">
+<h2>Some Evidence That We Actually Have a Life</h2>
+<div class="grid" id="grid"></div>
+<p class="note center">Some memories are better left undocumented. Unfortunately, we have photographic evidence.</p>
+<button class="btn" data-next>Next</button></div></section>
+
+<!-- S10 -->
+<section class="s" data-i="8"><div class="center">
+<h2>One last thing... 💌</h2>
+<div class="env" id="env2" role="button" tabindex="0" aria-label="Open the letter"><div class="paper"></div><div class="flap"></div><div class="seal">💗</div></div>
+<button class="btn" id="open2">One last thing...</button>
+<div id="letter" style="display:none;text-align:left" class="letter">
+<p>Roshini... sorry, Baby Yoda 😂</p>
+<p>Mundu oka vishayam cheppali. Nuvvu nijanga chala caring ga, kind ga untav. Ee friend group lo prathi okkarini nuvvu valued ga feel chestav. Andarini include chesi, comfortable ga unchutav. Idi andariki raadu, nee ki natural ga vachestundi.</p>
+<p>Manam chesina random, funny memories enno unnayi. Welding competition aithe eppatiki navvu techhe memory. (Nee weld better ani nuvvu oppinchav, certificate kuda ichanu, so fine 😂). Srujan–Vinay allegations aithe eppudu marchipoyevi kaavu, nuvvu vadilipettav ani naaku telusu.</p>
+<p>Inka chala memories create cheyali. Party pending undi, marchipoku.</p>
+<p>Nuvvu naaku nijanga special, important person.</p>
+<p>Happy Birthday, Baby Yoda. Stay exactly the way you are. And remember, no matter how many arguments we have, you're always going to be one of my favourite people.</p>
+<p>Emunde ley... nuvvu naaku chala special.</p>
+<p style="text-align:right">— Srujan</p>
+<button class="btn" data-next style="font-family:var(--sys)">Final surprise 🎉</button></div></div></section>
+
+<!-- S11 -->
+<section class="s" data-i="9"><div class="final">
+<h1 style="font-size:clamp(30px,8vw,52px)">HAPPY BIRTHDAY, ROSHINI! 🎂</h1>
+<h2>Officially one year older. Still the same Baby Yoda. 💚</h2>
+<p>Mission completed. Baby Yoda successfully celebrated. Party pending. 😂</p>
+<button class="btn" id="boom">More confetti! 🎊</button>
+<button class="btn alt" id="replay">Replay mission</button></div></section>
+</main>
+
+<div id="lb"><div id="lbc"></div><p id="lbp"></p><button class="btn" id="lbx">Close ✕</button></div>
+<nav id="nav"><button class="btn alt" id="back">← Back</button><button class="btn" id="next">Next →</button></nav>
+
+<script>
+/* ===== 4. SCREEN NAVIGATION ===== */
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const LAST=9;let cur=0;
+let S=(()=>{try{return JSON.parse(localStorage.getItem("babyYoda")||"{}")}catch(e){return{}}})();
+const save=()=>{try{localStorage.setItem("babyYoda",JSON.stringify(S))}catch(e){}};
+// Gates: screen index -> required flag in state
+const GATES={3:"won",8:"letter"};
+const gateOpen=i=>!GATES[i]||S[GATES[i]];
+function canGo(n){for(let i=cur;i<n;i++)if(!gateOpen(i))return false;return true}
+function go(n){
+  if(n<0||n>LAST)return;
+  if(n>cur&&!canGo(n)){toast();return}
+  cur=n;S.cur=n;save();
+  $$(".s").forEach(s=>s.classList.toggle("on",+s.dataset.i===n));
+  const p=Math.round(n/LAST*100);
+  $("#fill").style.width=p+"%";
+  $("#plabel").textContent="Baby Yoda's Birthday Mission: "+p+"% completed";
+  document.body.classList.toggle("calm",n>=8);
+  $("#back").style.visibility=n===0?"hidden":"visible";
+  $("#nav").style.display=n===LAST?"none":"flex";
+  updateNav();window.scrollTo({top:0,behavior:"smooth"});
+  if(n===LAST)celebrate(true);
+}
+function updateNav(){$("#next").disabled=!gateOpen(cur)||cur===LAST}
+function toast(){const m=cur===3?"Mundu welding war lo winner ni decide chey 😂":"Letter open cheyyi mundu 💌";
+  const t=document.createElement("div");t.textContent=m;t.style.cssText="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#9f1239;color:#fff;padding:10px 16px;border-radius:12px;z-index:70;font-family:var(--hand)";
+  document.body.appendChild(t);setTimeout(()=>t.remove(),2000)}
+$("#next").onclick=()=>go(cur+1);$("#back").onclick=()=>go(cur-1);
+$$("[data-next]").forEach(b=>b.onclick=()=>go(cur+1));
+document.addEventListener("keydown",e=>{
+  if(["TEXTAREA","INPUT"].includes(e.target.tagName)&&e.target.type!=="range")return;
+  if($("#lb").classList.contains("on")){if(e.key==="Escape")closeLB();return}
+  if(e.key==="ArrowRight")go(cur+1);if(e.key==="ArrowLeft")go(cur-1)});
+["env1","env2"].forEach(id=>$("#"+id).addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("#"+id).click()}}));
+
+/* ===== 3b. HEARTS & CONFETTI ===== */
+function heart(){const h=document.createElement("div");h.className="fh";h.textContent=["💗","💖","✨","⭐","💕"][Math.random()*5|0];
+  h.style.left=Math.random()*100+"vw";h.style.fontSize=12+Math.random()*18+"px";h.style.animationDuration=7+Math.random()*7+"s";
+  $("#hearts").appendChild(h);setTimeout(()=>h.remove(),15000)}
+setInterval(heart,900);
+const fx=$("#fx"),cx=fx.getContext("2d");let parts=[],raf=0;
+function sizeFx(){fx.width=innerWidth;fx.height=innerHeight}sizeFx();addEventListener("resize",sizeFx);
+function celebrate(big){
+  const cols=["#f43f5e","#fb7185","#fda4af","#9f1239","#fbbf24","#fff"];
+  for(let i=0;i<(big?180:110);i++)parts.push({x:innerWidth/2,y:innerHeight/3,vx:(Math.random()-.5)*16,vy:-Math.random()*14-3,s:5+Math.random()*7,c:cols[Math.random()*6|0],r:Math.random()*6,l:130+Math.random()*60});
+  if(!raf)raf=requestAnimationFrame(tick)}
+function tick(){cx.clearRect(0,0,fx.width,fx.height);
+  parts=parts.filter(p=>p.l-->0);
+  parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.3;p.r+=.2;cx.fillStyle=p.c;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);cx.restore()});
+  raf=parts.length?requestAnimationFrame(tick):0}
+
+/* ===== 4b. ENVELOPES (screen 1 & 10) ===== */
+let o1=false;
+function openEnv1(){if(o1)return;o1=true;$("#env1").classList.add("open");setTimeout(()=>{o1=false;$("#env1").classList.remove("open");go(1)},1300)}
+$("#open1").onclick=openEnv1;$("#env1").onclick=openEnv1;
+
+/* ===== screen 3: height ===== */
+function heightReact(){const v=+$("#hs").value;$("#hv").textContent=v+" cm";
+  $("#hr").textContent=v<140?"Awww, pocket-sized Baby Yoda. 🥹":v<=170?"Okay, acceptable Yoda height. 👍":"At this point you're applying for NBA. 🏀"}
+$("#hs").oninput=heightReact;heightReact();
+
+/* ===== 5. WELDING GAME LOGIC ===== */
+$("#tS").onclick=()=>{$("#wr").innerHTML='Correct ey kani ...nee bday kabati nee peru select cheysuko 😂<br><button class="btn alt" id="again">Select again</button>';$("#again").onclick=()=>{$("#wr").textContent=""}};
+$("#tR").onclick=()=>{
+  $("#wr").textContent="";$("#wwin").style.display="block";$(".teams").style.display="none";
+  drawCertificate();$("#certPrev").src=$("#cert").toDataURL("image/png");
+  celebrate(true);setTimeout(()=>celebrate(),600);S.won=true;save();updateNav()};
+
+/* ===== 6. CERTIFICATE CANVAS GENERATION ===== */
+function wrap(c,t,x,y,w,lh){let l="";t.split(" ").forEach(wd=>{const test=l+wd+" ";if(c.measureText(test).width>w&&l){c.fillText(l.trim(),x,y);l=wd+" ";y+=lh}else l=test});c.fillText(l.trim(),x,y);return y+lh}
+function drawCertificate(){
+  const cv=$("#cert"),c=cv.getContext("2d"),W=1200,H=850;
+  c.fillStyle="#fffdf5";c.fillRect(0,0,W,H);
+  c.strokeStyle="#9f1239";c.lineWidth=14;c.strokeRect(28,28,W-56,H-56);
+  c.strokeStyle="#f43f5e";c.lineWidth=4;c.strokeRect(50,50,W-100,H-100);
+  c.textAlign="center";c.fillStyle="#9f1239";c.font="bold 54px 'Segoe Print','Comic Sans MS',cursive";
+  c.fillText("OFFICIAL CERTIFICATE",W/2,150);c.fillText("OF WELDING SUPREMACY",W/2,215);
+  c.font="40px serif";c.fillText("🔥 ♥ 🔥",W/2,275);
+  c.fillStyle="#4c1d2d";c.font="31px 'Segoe Print','Comic Sans MS',cursive";
+  let y=340;
+  y=wrap(c,"This certificate is proudly awarded to Roshini for producing a weld superior to Srujan's.",W/2,y,860,46)+14;
+  y=wrap(c,"She tried her best to match Srujan's welding skills, but somehow her weld turned out to be better.",W/2,y,860,46)+14;
+  wrap(c,"After careful consideration, she is hereby declared the undisputed Welding Champion.",W/2,y,860,46);
+  // seal
+  c.beginPath();c.arc(210,690,70,0,7);c.fillStyle="#f43f5e";c.fill();c.lineWidth=6;c.strokeStyle="#9f1239";c.stroke();
+  c.beginPath();c.arc(210,690,52,0,7);c.strokeStyle="#fff";c.lineWidth=3;c.stroke();
+  c.fillStyle="#fff";c.font="bold 20px sans-serif";c.fillText("OFFICIAL",210,688);c.fillText("★ SEAL ★",210,714);
+  // date + signature
+  c.fillStyle="#881337";c.font="24px 'Segoe Print','Comic Sans MS',cursive";
+  c.fillText("Date: "+new Date().toLocaleDateString("en-IN",{day:"numeric",month:"long",year:"numeric"}),W/2,700);
+  c.font="italic 58px 'Segoe Script','Brush Script MT','Segoe Print',cursive";c.fillStyle="#9f1239";c.fillText("Srujan",930,690);
+  c.strokeStyle="#4c1d2d";c.lineWidth=2;c.beginPath();c.moveTo(780,712);c.lineTo(1080,712);c.stroke();
+  c.fillStyle="#4c1d2d";c.font="22px 'Segoe Print','Comic Sans MS',cursive";c.fillText("Chief Judge: Srujan",930,748);
+}
+$("#dlCert").onclick=()=>{const a=document.createElement("a");a.href=$("#cert").toDataURL("image/png");a.download="Roshini-Welding-Champion-Certificate.png";document.body.appendChild(a);a.click();a.remove()};
+
+/* ===== 7. FRIENDSHIP COURT ===== */
+const COURT=["The court has officially accepted the allegations. Srujan and Vinay have no legal escape. 😂","Objection! The prosecution has failed to provide sufficient evidence. 🙅","Smart decision. More investigation is required. 😂"];
+const STAMPS=["GUILTY","INNOCENT","PENDING"];
+$$("[data-c]").forEach(b=>b.onclick=()=>{
+  $$("[data-c]").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");const i=+b.dataset.c;
+  $("#stampbox").innerHTML='<span class="stamp">'+STAMPS[i]+"</span>";$("#cr").textContent=COURT[i]});
+
+/* ===== 8. QUIZ LOGIC ===== */
+const QUIZ=[
+ {q:"Official Baby Yoda evaru?",o:["Srujan","Roshini","Vinay","Yoda ee"],a:1,r:["Wrong, Master Yoda kuda sigguga feel ayyadu 😂","Correct! Baby Yoda = Roshini 💚"]},
+ {q:"Famous phrase emiti?",o:["Emunde ley","Ela unnav","Chala bagundi","Chudam le"],a:0,r:["Hmm, nuvvu ee friend group lo ledha? 🤨","Emunde ley! Classic 😌"]},
+ {q:"Welding competition evaru gelichindi?",o:["Srujan","Roshini","Evvaru kaadu","Welding machine"],a:1,r:["Certificate chudu inka 😂","Obviously. Certificate untundi 🏆"]},
+ {q:"Srujan–Vinay allegations ni evaru continuously techthuntaru?",o:["Roshini","Roshini ey","Inka Roshini","All of the above (Roshini)"],a:0,r:["Anni options lo same answer, kani correct 😂","Case closed. Roshini ey 😂"]}];
+let qi=0,qs=0;
+function renderQ(){const b=$("#qbox");
+  if(qi>=QUIZ.length){const m=qs===4?"Perfect! Nuvvu true Baby Yoda 💚":qs>=2?"Not bad, kani konchem ekkuva alochinchu 😂":"Hmm... memory loss aa Baby Yoda? 😭";
+    b.innerHTML='<h2>Score: '+qs+' / 4</h2><p class="react">'+m+'</p><button class="btn" data-next id="qn">Next</button>';$("#qn").onclick=()=>go(cur+1);if(qs>=3)celebrate();return}
+  const q=QUIZ[qi];b.innerHTML='<h2>Q'+(qi+1)+'. '+q.q+'</h2>'+q.o.map((t,i)=>'<button class="opt" data-q="'+i+'">'+t+'</button>').join("")+'<div class="react" id="qr"></div>';
+  $$("[data-q]").forEach(x=>x.onclick=()=>{const i=+x.dataset.q,ok=i===q.a;if(ok)qs++;
+    $$("[data-q]").forEach(y=>{y.disabled=true;y.classList.toggle("good",+y.dataset.q===q.a)});if(!ok)x.classList.add("bad");
+    $("#qr").innerHTML=q.r[ok?1:0]+'<br><button class="btn" id="qnx">'+(qi===3?"See score":"Next question")+'</button>';$("#qnx").onclick=()=>{qi++;renderQ()}})}
+renderQ();
+
+/* ===== 9. PERSONALITY SCANNER ===== */
+const PQ=[
+ {id:"weekend",q:"Nee ideal weekend ela untundi?",o:["Intlo undi something chudadam","Bayataki velli explore cheyyadam","Friends tho time spend cheyyadam","Asalu em cheyyakunda undadam"]},
+ {id:"teleport",q:"Ippudu teleport avvachu ante ekkadiki veltav?",o:["Mountains","Beach","Oka beautiful city","Somewhere completely random"]},
+ {id:"happy",q:"Nannu most happy ga chesedi emiti?",o:["Unexpected surprises","People tho quality time","Food and good experiences","Peace and personal space"]},
+ {id:"plan",q:"Nee ideal plan ent?",o:["Spontaneous adventure","Carefully planned day","Cosy evening","Something completely new"]},
+ {id:"mood",q:"Nee current mood pick chey:",o:["Main character energy","Sleepy potato","Chaos coordinator","Peaceful philosopher"]}];
+const RES=["Professional Chaos Coordinator 🌀","Sleepy Potato Supreme 🥔","Main Character Yoda ✨","Peaceful Philosopher Yoda 🧘"];
+const RDESC=["Plans lekunda kuda andarini organise chesesthav.","Comfort + snacks = nee superpower.","Ekkada unna spotlight nee daggare.","Calm ga unte kuda andaru nee advice adugutaru."];
+let pi=0,pa=S.pa||[];
+function renderP(){const b=$("#pbox");
+  if(pi>=PQ.length){const cnt=[0,0,0,0];pa.forEach(i=>cnt[i%4]++);const k=cnt.indexOf(Math.max(...cnt));
+    b.innerHTML='<p class="note">Scanning complete... 🛸</p><h2>Your Baby Yoda classification: '+RES[k]+'</h2><p>'+RDESC[k]+'</p><button class="btn alt" id="pre">Retake scan</button><br><button class="btn" id="pnx">Next</button>';
+    $("#pre").onclick=()=>{pi=0;pa=[];S.pa=[];save();renderP()};$("#pnx").onclick=()=>go(cur+1);celebrate();return}
+  const q=PQ[pi];b.innerHTML='<p class="note">Question '+(pi+1)+' / '+PQ.length+'</p><h2>'+q.q+'</h2>'+q.o.map((t,i)=>'<button class="opt" data-p="'+i+'">'+t+'</button>').join("");
+  $$("[data-p]").forEach(x=>x.onclick=()=>{x.classList.add("sel");pa[pi]=+x.dataset.p;S.pa=pa;save();setTimeout(()=>{pi++;renderP()},350)})}
+if(pa.length>=PQ.length)pi=PQ.length;renderP();
+
+/* ===== 10. GALLERY RENDERING & LIGHTBOX ===== */
+// EDIT THIS LIST: put files in a "media/" folder beside this HTML file
+const MEDIA_ITEMS=[
+ {type:"image",src:"media/roshini1.jpeg"},
+ {type:"video",src:"media/courtlady.mp4",caption:"em attitude raa"},
+ {type:"image",src:"media/roshini2.jpeg",caption:"even my frame is bigger than you raa 😂"},
+ {type:"image",src:"media/grp2.jpeg",caption:"enduku tesukunnamu raa idhe...drunken ppl only"},
+ {type:"image",src:"media/roshini3.jpeg",caption:"good old days"},
+ {type:"image",src:"media/roshini4.jpeg",caption:"can't spot human here"},
+ {type:"video",src:"media/arugment.mp4",caption:"what a debate..!!"},
+ {type:"image",src:"media/roshini5.jpeg",caption:"em attitude raa"},
+ {type:"image",src:"media/roshini6.jpeg",caption:"attitude star"},
+ {type:"image",src:"media/roshini7.jpeg",caption:"entha caring raa"},
+ {type:"image",src:"media/grppic.jpeg",caption:"waiting for the party"},
+ {type:"image",src:"media/chinese.jpeg",caption:"full aunty only"},
+ {type:"image",src:"media/mentalhospital.jpeg",caption:"honorable mention"},
+ {type:"video",src:"media/somerandom.mp4",caption:"naaku pastry kavali ra...!!"}
+];
+function placeholder(it){const d=document.createElement("div");d.className="m";d.textContent=it.type==="video"?"🎬":"📷";return d}
+function renderGallery(){const g=$("#grid");g.innerHTML="";
+  MEDIA_ITEMS.forEach(it=>{const c=document.createElement("button");c.className="pcard";
+    let m;if(it.type==="video"){m=document.createElement("video");m.src=it.src;m.muted=true;m.preload="metadata";m.className="m"}else{m=document.createElement("img");m.src=it.src;m.alt=it.caption;m.className="m"}
+    m.onerror=()=>m.replaceWith(placeholder(it));c.appendChild(m);
+    const p=document.createElement("p");p.textContent=it.caption;c.appendChild(p);c.onclick=()=>openLB(it);g.appendChild(c)})}
+function openLB(it){const b=$("#lbc");b.innerHTML="";let m;
+  if(it.type==="video"){m=document.createElement("video");m.controls=true;m.autoplay=true}else m=document.createElement("img");
+  m.src=it.src;m.onerror=()=>{b.innerHTML="";const d=placeholder(it);d.style.cssText="font-size:70px;background:#fff;padding:30px;border-radius:12px";b.appendChild(d)};
+  b.appendChild(m);$("#lbp").textContent=it.caption;$("#lb").classList.add("on")}
+function closeLB(){$("#lb").classList.remove("on");const v=$("#lbc video");if(v)v.pause();$("#lbc").innerHTML=""}
+$("#lbx").onclick=closeLB;$("#lb").onclick=e=>{if(e.target.id==="lb")closeLB()};renderGallery();
+
+/* ===== 13. LETTER ANIMATION ===== */
+function openLetter(){if(S.letter&&$("#letter").style.display==="block")return;
+  $("#env2").classList.add("open");$("#open2").style.display="none";
+  setTimeout(()=>{$("#env2").style.display="none";$("#letter").style.display="block";S.letter=true;save();updateNav()},1200)}
+$("#open2").onclick=openLetter;$("#env2").onclick=openLetter;
+if(S.letter){$("#env2").style.display="none";$("#open2").style.display="none";$("#letter").style.display="block"}
+
+/* ===== 14. FINAL CELEBRATION ===== */
+$("#boom").onclick=()=>{celebrate(true);for(let i=0;i<8;i++)heart()};
+$("#replay").onclick=()=>{S.won=false;S.letter=false;save();location.reload()};
+
+if(S.won){$("#wwin").style.display="block";$(".teams").style.display="none";drawCertificate();$("#certPrev").src=$("#cert").toDataURL("image/png")}
+go(Math.min(S.cur||0,LAST));
+</script>
+</body>
+</html>
